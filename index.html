@@ -530,6 +530,47 @@ canvas { width: 100% !important; }
 .sync-dot.local { background: var(--carb); }
 .sync-dot.synced { background: var(--fib); }
 
+.sync-dot.firebase { background:#8b5cf6; }
+.sync-dot.error { background:#ef4444; }
+.ppl-sync-panel{background:#0f1f39;color:#dbe7ff;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;box-shadow:none;margin-bottom:12px}
+.ppl-sync-panel .section-title,.ppl-sync-panel .card-title,.ppl-sync-panel .form-label,.ppl-sync-panel .text-muted{color:#dbe7ff !important}
+.ppl-sync-panel .muted-copy{color:#b7c6e4;font-size:13px;line-height:1.6}
+.ppl-sync-panel .form-label{color:#9fb4d9 !important}
+.ppl-sync-panel .form-input,.ppl-sync-panel textarea{background:#263a5f;border-color:rgba(255,255,255,.06);color:#f5f8ff}
+.ppl-sync-panel .form-input::placeholder,.ppl-sync-panel textarea::placeholder{color:#c2d0ea;opacity:.65}
+.ppl-sync-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ppl-sync-grid.single{grid-template-columns:1fr}
+.ppl-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ppl-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 14px;border-radius:10px;font-size:14px;font-weight:600;border:1px solid rgba(255,255,255,.06);color:#eef4ff;background:#31476e;cursor:pointer}
+.ppl-btn.primary{background:linear-gradient(135deg,#7c5cff,#6d5cf0)}
+.ppl-btn.danger{background:#8d0707}
+.ppl-btn:active{transform:scale(.98)}
+.ppl-status-box,.ppl-cloud-status{margin-top:12px;background:#263a5f;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:12px 14px;color:#cbd7ee;font-size:13px;line-height:1.5}
+.ppl-bullets{margin-top:12px;color:#b7c6e4;font-size:13px;line-height:1.7;padding-left:18px}
+.ppl-checkbox-row{display:flex;align-items:center;gap:10px;margin-top:10px;color:#c9d6ee;font-size:13px}
+.ppl-checkbox-row input{accent-color:#7c5cff;width:16px;height:16px}
+.ppl-cloud-status .offline{color:#ff6b6b}.ppl-cloud-status .online{color:#8cf29d}
+.hidden-sync-meta{display:none}
+.comp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.comp-chip{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px}
+.comp-chip-label{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.06em}
+.comp-chip-value{font-size:18px;font-weight:600;margin-top:4px}
+@media(min-width:720px){.comp-grid{grid-template-columns:repeat(3,1fr)}}
+[data-theme="light"] .ppl-sync-panel{background:var(--surface);border:1px solid var(--border);color:var(--text)}
+[data-theme="light"] .ppl-sync-panel .section-title,[data-theme="light"] .ppl-sync-panel .card-title,[data-theme="light"] .ppl-sync-panel .form-label,[data-theme="light"] .ppl-sync-panel .text-muted{color:var(--text2) !important}
+[data-theme="light"] .ppl-sync-panel .muted-copy{color:var(--text2)}
+[data-theme="light"] .ppl-sync-panel .form-label{color:var(--text2) !important}
+[data-theme="light"] .ppl-sync-panel .form-input,[data-theme="light"] .ppl-sync-panel textarea{background:var(--surface2);border-color:var(--border);color:var(--text)}
+[data-theme="light"] .ppl-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text)}
+[data-theme="light"] .ppl-btn.primary{background:var(--pro);color:#fff;border-color:var(--pro)}
+[data-theme="light"] .ppl-btn.danger{background:#fee2e2;color:#b91c1c;border-color:#fca5a5}
+[data-theme="light"] .ppl-status-box,[data-theme="light"] .ppl-cloud-status{background:var(--surface2);border-color:var(--border);color:var(--text2)}
+[data-theme="light"] .ppl-bullets{color:var(--text2)}
+[data-theme="light"] .ppl-checkbox-row{color:var(--text2)}
+[data-theme="light"] .ppl-cloud-status .offline{color:#dc2626}
+[data-theme="light"] .ppl-cloud-status .online{color:#16a34a}
+@media (max-width:640px){.ppl-sync-grid,.ppl-btn-row{grid-template-columns:1fr}}
+
 /* ─── Toast ────────────────────────────────────────────────── */
 #toast {
   position: fixed; bottom: calc(var(--nav-h) + var(--safe-bottom) + 16px); left: 50%;
@@ -631,7 +672,8 @@ canvas { width: 100% !important; }
     <button class="tab-btn" data-tab="library">Library</button>
     <button class="tab-btn" data-tab="history">History</button>
     <button class="tab-btn" data-tab="weekly">Weekly</button>
-    <button class="tab-btn" data-tab="body">Body</button>
+    <button class="tab-btn" data-tab="body-summary">Body Summary</button>
+    <button class="tab-btn" data-tab="body">Body Log</button>
     <button class="tab-btn" data-tab="settings">Settings</button>
   </nav>
 
@@ -727,45 +769,61 @@ canvas { width: 100% !important; }
   </section>
 
   <!-- ════════════════════════════════════════
+       PAGE: BODY SUMMARY
+  ════════════════════════════════════════ -->
+  <section class="page" id="page-body-summary">
+    <div id="bodysum-date-strip"></div>
+    <div class="card" id="bodysum-overview"></div>
+    <div class="card" id="bodysum-comparison"></div>
+    <div class="card" id="bodysum-composition"></div>
+    <div class="card" id="bodysum-trends"></div>
+    <div class="card" id="bodysum-recent"></div>
+  </section>
+
+  <!-- ════════════════════════════════════════
        PAGE: BODY
   ════════════════════════════════════════ -->
   <section class="page" id="page-body">
-    <div class="section-title">Body Tracking</div>
+    <div class="section-title">Body Tracking & BIA</div>
     <div class="card">
-      <div class="card-header">
-        <div class="card-title" style="margin-bottom:0">Log Weight</div>
+      <div class="card-header"><div class="card-title" style="margin-bottom:0">Log BIA / Body Composition</div></div>
+      <div class="form-row mb-12">
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Date</label><input type="date" class="form-input" id="body-date"></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Weight (kg) *</label><input type="number" class="form-input" id="body-weight" placeholder="70.5" step="0.1" min="0"></div>
+      </div>
+      <div class="form-section-title">Primary Body Composition</div>
+      <div class="form-row-3 mb-12">
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Body Fat (%)</label><input type="number" class="form-input" id="body-fat-pct" placeholder="18.5" step="0.1" min="0"></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Skeletal Muscle (%)</label><input type="number" class="form-input" id="body-skeletal-muscle-pct" placeholder="42.0" step="0.1" min="0"></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Muscle Mass (kg)</label><input type="number" class="form-input" id="body-muscle-mass" placeholder="32.0" step="0.1" min="0"></div>
+      </div>
+      <div class="form-row-3 mb-12">
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Lean Mass (kg)</label><input type="number" class="form-input" id="body-lean-mass" placeholder="55.0" step="0.1" min="0"></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Fat Mass (kg)</label><input type="number" class="form-input" id="body-fat-mass" placeholder="13.0" step="0.1" min="0"></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Body Water (%)</label><input type="number" class="form-input" id="body-water-pct" placeholder="58.0" step="0.1" min="0"></div>
+      </div>
+      <div class="form-section-title">Additional BIA Metrics</div>
+      <div class="form-row-3 mb-12">
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Protein (%)</label><input type="number" class="form-input" id="body-protein-pct" placeholder="18.0" step="0.1" min="0"></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Bone Mass (kg)</label><input type="number" class="form-input" id="body-bone-mass" placeholder="3.0" step="0.1" min="0"></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Visceral Fat</label><input type="number" class="form-input" id="body-visceral-fat" placeholder="7" step="0.1" min="0"></div>
+      </div>
+      <div class="form-row-3 mb-12">
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Subcutaneous Fat (%)</label><input type="number" class="form-input" id="body-subcutaneous-fat-pct" placeholder="15.0" step="0.1" min="0"></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">BMI</label><input type="number" class="form-input" id="body-bmi" placeholder="22.1" step="0.1" min="0"></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">BMR (kcal)</label><input type="number" class="form-input" id="body-bmr" placeholder="1650" step="1" min="0"></div>
       </div>
       <div class="form-row mb-12">
-        <div class="form-group" style="margin-bottom:0">
-          <label class="form-label">Date</label>
-          <input type="date" class="form-input" id="body-date">
-        </div>
-        <div class="form-group" style="margin-bottom:0">
-          <label class="form-label">Weight (kg)</label>
-          <input type="number" class="form-input" id="body-weight" placeholder="70.5" step="0.1" min="0">
-        </div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Metabolic Age</label><input type="number" class="form-input" id="body-metabolic-age" placeholder="28" step="1" min="0"></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">Waist (cm)</label><input type="number" class="form-input" id="body-waist" placeholder="80" step="0.1" min="0"></div>
       </div>
-      <div class="form-row mb-12">
-        <div class="form-group" style="margin-bottom:0">
-          <label class="form-label">Waist (cm) <span class="text-muted" style="font-size:10px">optional</span></label>
-          <input type="number" class="form-input" id="body-waist" placeholder="80" step="0.5" min="0">
-        </div>
-        <div class="form-group" style="margin-bottom:0">
-          <label class="form-label">Notes</label>
-          <input type="text" class="form-input" id="body-note" placeholder="Post-workout…">
-        </div>
-      </div>
-      <button class="btn btn-primary btn-block" id="body-save-btn">Save Entry</button>
+      <div class="form-group" style="margin-bottom:12px"><label class="form-label">Notes</label><input type="text" class="form-input" id="body-note" placeholder="Fasted AM, after training, hydration low..."></div>
+      <button class="btn btn-primary btn-block" id="body-save-btn">Save Body Entry</button>
     </div>
-    <div class="card">
-      <div class="card-title">Weight Trend</div>
-      <div id="body-stats" style="margin-bottom:10px"></div>
-      <div class="chart-wrap"><canvas id="body-chart" role="img" aria-label="Body weight trend chart"></canvas></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Log Entries</div>
-      <div id="body-log-list"></div>
-    </div>
+    <div class="card"><div class="card-title">Latest Snapshot</div><div id="body-stats"></div><div id="body-composition-grid"></div></div>
+    <div class="card"><div class="card-title">Weight Trend</div><div class="chart-wrap"><canvas id="body-chart"></canvas></div></div>
+    <div class="card"><div class="card-title">Body Fat Trend</div><div class="chart-wrap"><canvas id="body-fat-chart"></canvas></div></div>
+    <div class="card"><div class="card-title">Log Entries</div><div id="body-log-list"></div></div>
   </section>
 
   <!-- ════════════════════════════════════════
@@ -793,73 +851,66 @@ canvas { width: 100% !important; }
     </div>
 
     <!-- Sync Status -->
-    <div class="card">
-      <div class="card-title">Sync & Backup</div>
-      <div class="sync-status">
-        <div class="sync-dot local"></div>
-        <div>
-          <div style="font-weight:500">Local Only</div>
-          <div class="text-xs text-muted" id="sync-last-export">Never exported</div>
-        </div>
-        <div style="margin-left:auto;font-size:12px;color:var(--text3)">v1.0</div>
-      </div>
-      <div class="settings-section">
-        <div class="settings-row">
-          <div><div class="settings-label">Device ID</div><div class="settings-sub text-xs" id="device-id-display">—</div></div>
-        </div>
-        <div class="settings-row">
-          <div><div class="settings-label">Last Export</div><div class="settings-sub text-xs" id="last-export-display">Never</div></div>
-        </div>
-        <div class="settings-row">
-          <div><div class="settings-label">Last Import</div><div class="settings-sub text-xs" id="last-import-display">Never</div></div>
-        </div>
-      </div>
-      <div class="flex gap-8 mb-12">
-        <button class="btn btn-secondary flex-1" id="export-btn">⬇ Export JSON</button>
-        <button class="btn btn-secondary flex-1" id="import-btn-trigger">⬆ Import JSON</button>
+    <div class="ppl-sync-panel">
+      <div class="section-title" style="margin-bottom:4px;font-size:24px;letter-spacing:-.4px;">Local backup tools</div>
+      <div class="muted-copy">Use this to keep a safe copy of your nutrition logs, move data between iPhone and desktop, or reset local browser data.</div>
+      <div class="ppl-btn-row" style="margin-top:14px;">
+        <button type="button" class="ppl-btn primary" id="export-btn">Export JSON</button>
+        <button type="button" class="ppl-btn" id="import-btn-trigger">Import JSON</button>
         <input type="file" id="import-file-input" accept=".json" style="display:none">
       </div>
-      <div style="font-size:12px;color:var(--text3);line-height:1.6">
-        Export saves all your data as a JSON file. Import it on another device to manually sync your data. If you enable Firebase below, phone and desktop can sync automatically.
+      <div class="ppl-btn-row" style="margin-top:10px;">
+        <button type="button" class="ppl-btn danger" id="clear-local-data-btn">Clear Local Data</button>
+        <button type="button" class="ppl-btn" id="refresh-sync-status-btn">Refresh Status</button>
+      </div>
+      <div class="ppl-status-box" id="local-backup-status">Status: Local browser storage is active.</div>
+      <ul class="ppl-bullets">
+        <li>Export on one device, then import the JSON file on another device if you want a manual backup or one-time transfer.</li>
+        <li>Local data is stored in your current browser only.</li>
+      </ul>
+      <div class="hidden-sync-meta">
+        <span id="device-id-display"></span>
+        <span id="last-export-display"></span>
+        <span id="last-import-display"></span>
       </div>
     </div>
 
-    <!-- Firebase Sync -->
-    <div class="card">
-      <div class="card-title">Firebase Real-Time Sync <span style="font-size:10px;padding:2px 7px;background:var(--pro-bg);border-radius:99px;color:var(--pro);border:1px solid var(--border)">Ready</span></div>
-      <div class="sync-status">
-        <div class="sync-dot local" id="firebase-sync-dot"></div>
-        <div>
-          <div style="font-weight:500" id="firebase-sync-label">Local Only</div>
-          <div class="text-xs text-muted" id="firebase-sync-detail">Paste Firebase config below, then connect when you are ready.</div>
-        </div>
-        <div style="margin-left:auto;font-size:12px;color:var(--text3)" id="firebase-sync-mode">Local</div>
+    <!-- Future Sync Placeholder -->
+    <div class="ppl-sync-panel">
+      <div class="section-title" style="margin-bottom:4px;font-size:24px;letter-spacing:-.4px;">Cloud sync (Firebase Realtime Database)</div>
+      <div class="muted-copy">Fill in your Firebase web app config + database URL. Once connected, this app can push local changes to the cloud and receive remote updates from your other devices.</div>
+      <div class="ppl-sync-grid" style="margin-top:14px;">
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">API KEY</label><input type="text" class="form-input" id="rtdb-api-key" placeholder="from Firebase"></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">AUTH DOMAIN</label><input type="text" class="form-input" id="rtdb-auth-domain" placeholder="from Firebase"></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">PROJECT ID</label><input type="text" class="form-input" id="rtdb-project-id" placeholder="from Firebase"></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">DATABASE URL</label><input type="text" class="form-input" id="rtdb-url" placeholder="https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app"></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">STORAGE BUCKET</label><input type="text" class="form-input" id="rtdb-storage-bucket" placeholder="from Firebase"></div>
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">MESSAGING SENDER ID</label><input type="text" class="form-input" id="rtdb-sender-id" placeholder="from Firebase"></div>
       </div>
-      <div class="firebase-grid">
-        <div class="form-group" style="margin-bottom:0">
-          <label class="form-label">Firebase Config JSON</label>
-          <textarea class="form-input firebase-textarea" id="firebase-config" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}'></textarea>
-        </div>
-        <div class="form-row">
-          <div class="form-group" style="margin-bottom:0">
-            <label class="form-label">Collection</label>
-            <input type="text" class="form-input" id="firebase-collection" placeholder="nutritionTrackers">
-          </div>
-          <div class="form-group" style="margin-bottom:0">
-            <label class="form-label">Document ID</label>
-            <input type="text" class="form-input" id="firebase-doc-id" placeholder="shared-main">
-          </div>
-        </div>
+      <div class="ppl-sync-grid single" style="margin-top:10px;">
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">APP ID</label><input type="text" class="form-input" id="rtdb-app-id" placeholder="from Firebase"></div>
       </div>
-      <div class="firebase-actions">
-        <button class="btn btn-secondary btn-sm" id="firebase-save-config-btn">Save Config</button>
-        <button class="btn btn-primary btn-sm" id="firebase-connect-btn">Connect Sync</button>
-        <button class="btn btn-secondary btn-sm" id="firebase-push-btn">Push Now</button>
-        <button class="btn btn-secondary btn-sm" id="firebase-disconnect-btn">Disconnect</button>
+      <div class="ppl-sync-grid single" style="margin-top:10px;">
+        <div class="form-group" style="margin-bottom:0"><label class="form-label">SYNC KEY (SHARED ACROSS DEVICES)</label><input type="text" class="form-input" id="rtdb-sync-key" placeholder="vittawit-nutrition"></div>
       </div>
-      <div class="firebase-note">
-        This version is already Firebase-ready in code. For the easiest free setup, use one Firestore document for your tracker state. On Spark/free tier, fewer listeners and fewer writes are usually better.
+      <label class="ppl-checkbox-row"><input type="checkbox" id="rtdb-auto-push"> Auto-push local changes after save / import / clear</label>
+      <div class="ppl-btn-row" style="margin-top:14px;">
+        <button type="button" class="ppl-btn" id="rtdb-save-config-btn">Save Cloud Config</button>
+        <button type="button" class="ppl-btn primary" id="rtdb-connect-btn">Connect Cloud</button>
       </div>
+      <div class="ppl-btn-row" style="margin-top:10px;">
+        <button type="button" class="ppl-btn" id="rtdb-push-btn">Push Local → Cloud</button>
+        <button type="button" class="ppl-btn" id="rtdb-pull-btn">Pull Cloud → Local</button>
+      </div>
+      <div class="ppl-btn-row" style="margin-top:10px;">
+        <button type="button" class="ppl-btn" id="rtdb-disconnect-btn">Disconnect Cloud</button>
+        <div></div>
+      </div>
+      <div class="ppl-cloud-status" id="rtdb-cloud-status"><span class="offline">● Not connected</span> <span id="rtdb-cloud-status-text">Sync Key: —</span>.</div>
+      <ul class="ppl-bullets">
+        <li>Use the same <b>Sync Key</b> on iPhone and desktop to point both devices to the same dataset.</li>
+        <li>After connecting, remote updates from another device can be applied automatically while this page is open.</li>
+      </ul>
     </div>
 
     <!-- Danger Zone -->
@@ -1060,15 +1111,27 @@ const MEAL_META = {
   other:     { label:'Other',     icon:'🍽️' },
 };
 const DEFAULT_TARGETS = { cal:2000, pro:150, carb:250, fat:65, fib:30, wat:2500 };
-const DEFAULT_FIREBASE_SYNC = {
+const BODY_METRIC_META = [
+  {key:'weight',label:'Weight',unit:'kg',color:'#2B6CE0',d:1},
+  {key:'bodyFatPct',label:'Body Fat',unit:'%',color:'#E05A2B',d:1},
+  {key:'skeletalMusclePct',label:'Skeletal Muscle',unit:'%',color:'#27AE60',d:1},
+  {key:'muscleMass',label:'Muscle Mass',unit:'kg',color:'#27AE60',d:1},
+  {key:'leanMass',label:'Lean Mass',unit:'kg',color:'#1A9BBF',d:1},
+  {key:'fatMass',label:'Fat Mass',unit:'kg',color:'#9B59B6',d:1},
+  {key:'waterPct',label:'Body Water',unit:'%',color:'#1A9BBF',d:1},
+  {key:'proteinPct',label:'Protein',unit:'%',color:'#D4A017',d:1},
+  {key:'boneMass',label:'Bone Mass',unit:'kg',color:'#6B6860',d:1},
+  {key:'visceralFat',label:'Visceral Fat',unit:'',color:'#D4A017',d:1},
+  {key:'subcutaneousFatPct',label:'Subcutaneous Fat',unit:'%',color:'#9B59B6',d:1},
+  {key:'bmi',label:'BMI',unit:'',color:'#6B6860',d:1},
+  {key:'bmr',label:'BMR',unit:'kcal',color:'#E05A2B',d:0},
+  {key:'metabolicAge',label:'Metabolic Age',unit:'y',color:'#6B6860',d:0},
+  {key:'waist',label:'Waist',unit:'cm',color:'#9B59B6',d:1},
+];
+const DEFAULT_RTDB_SYNC = {
   enabled: false,
-  config: '',
-  collection: 'nutritionTrackers',
-  docId: 'shared-main',
-  status: 'local',
-  lastRemoteAt: null,
-  lastError: '',
-  lastPushedAt: null,
+  apiKey: '', authDomain: '', projectId: '', databaseURL: '', storageBucket: '', messagingSenderId: '', appId: '',
+  syncKey: 'vittawit-nutrition', autoPush: true, status: 'local', lastRemoteAt: null, lastError: '', lastPushedAt: null,
 };
 const DEFAULT_LIB = [
   { name:'Chicken Breast (100g)', cal:165, pro:31, carb:0, fat:3.6, fib:0, serving:'100g' },
@@ -1105,7 +1168,7 @@ let state = {
     targets: { ...DEFAULT_TARGETS },
     theme: 'light',
     units: 'metric',
-    firebase: { ...DEFAULT_FIREBASE_SYNC },
+    rtdb: { ...DEFAULT_RTDB_SYNC },
   },
   dailyLogs: {},        // keyed by 'YYYY-MM-DD': { entries:[], notes:{}, waterTotal }
   foodLibrary: [],      // reusable templates
@@ -1141,9 +1204,7 @@ function saveData() {
   try {
     state.meta.updatedAt = new Date().toISOString();
     localStorage.setItem(LS_KEY, JSON.stringify(state));
-    if (state.settings?.firebase?.enabled && firebaseSync.connected && !firebaseSync.isApplyingRemote) {
-      scheduleFirebasePush();
-    }
+    if (state.settings?.rtdb?.enabled && state.settings?.rtdb?.autoPush && rtdbSync.connected && !rtdbSync.isApplyingRemote) scheduleRTDBPush();
   } catch(e) {
     console.warn('[NutriLog] Could not save data:', e);
   }
@@ -1309,6 +1370,8 @@ function genId() {
 function sum(arr, key) {
   return arr.reduce((a, b) => a + (parseFloat(b[key]) || 0), 0);
 }
+function numOrNull(v){if(v===''||v===null||v===undefined)return null;const n=parseFloat(v);return Number.isFinite(n)?n:null;}
+function metricDisplay(entry,key,decimals){const value=entry&&entry[key];return value===null||value===undefined||value===''?'—':fmt(value,decimals===undefined?1:decimals);}
 function fmt(n, dec=0) {
   return (Math.round(n * Math.pow(10,dec)) / Math.pow(10,dec)).toLocaleString();
 }
@@ -1358,32 +1421,12 @@ function showConfirm(title, msg, okLabel='Delete', danger=true) {
     el('confirm-modal').classList.add('open');
   });
 }
-function debounce(fn, wait=800) {
-  let timer = null;
-  return (...args) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => fn(...args), wait);
-  };
-}
-function parseIsoTime(v) {
-  const n = v ? Date.parse(v) : 0;
-  return Number.isFinite(n) ? n : 0;
-}
-function ensureFirebaseSettings() {
-  if (!state.settings.firebase) state.settings.firebase = { ...DEFAULT_FIREBASE_SYNC };
-  state.settings.firebase = { ...DEFAULT_FIREBASE_SYNC, ...state.settings.firebase };
-  return state.settings.firebase;
-}
-const firebaseSync = {
-  app: null,
-  db: null,
-  modules: null,
-  unsubscribe: null,
-  connected: false,
-  isApplyingRemote: false,
-  isPushing: false,
-};
-const scheduleFirebasePush = debounce(() => pushStateToFirebase('auto-save'), 1200);
+function debounce(fn, wait=800) { let t=null; return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args), wait); }; }
+function parseIsoTime(v) { const n = v ? Date.parse(v) : 0; return Number.isFinite(n) ? n : 0; }
+function ensureRTDBSettings() { if (!state.settings.rtdb) state.settings.rtdb = { ...DEFAULT_RTDB_SYNC }; state.settings.rtdb = { ...DEFAULT_RTDB_SYNC, ...state.settings.rtdb }; return state.settings.rtdb; }
+function currentRTDBPath() { const rtdb = ensureRTDBSettings(); const key = (rtdb.syncKey || 'vittawit-nutrition').trim() || 'vittawit-nutrition'; return `nutritionTrackers/${key}`; }
+const rtdbSync = { app:null, db:null, modules:null, unsubscribe:null, connected:false, isApplyingRemote:false, isPushing:false };
+const scheduleRTDBPush = debounce(() => pushStateToRTDB('auto-save'), 1200);
 
 /* ════════════════════════════════════════
    6. THEME
@@ -1912,6 +1955,7 @@ function goToDate(date) {
   switchTab('dashboard');
   syncDateInputs();
   renderDashboard();
+  renderBodySummary();
 }
 
 /* ════════════════════════════════════════
@@ -2011,265 +2055,192 @@ function renderWeekly() {
    15. BODY TRACKING
 ════════════════════════════════════════ */
 let bodyChartObj = null;
+let bodyFatChartObj = null;
 
-function renderBody() {
-  el('body-date').value = todayStr();
-  const entries = [...state.bodyLog].sort((a,b) => b.date.localeCompare(a.date));
-  const recent = entries.slice(0, 30);
-  const isDark = state.settings.theme === 'dark';
-  const textColor = isDark ? '#9A988F' : '#6B6860';
-  const gridColor = isDark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)';
+function getBodySorted(){return[...state.bodyLog].sort((a,b)=>b.date.localeCompare(a.date)||(Date.parse(b.updatedAt||0)-Date.parse(a.updatedAt||0)));}
+function getBodyByDate(date){return getBodySorted().find(e=>e.date===date)||null;}
+function getBodyAtOrBefore(date){return getBodySorted().find(e=>e.date<=date)||null;}
+function getPrevBody(entry){if(!entry)return null;const es=getBodySorted();const i=es.findIndex(e=>e.id===entry.id);return i>=0&&i<es.length-1?es[i+1]:null;}
+function jumpBodySum(date){state.ui.activeDate=date;syncDateInputs();switchTab('body-summary');}
 
-  // Stats
-  if (entries.length >= 2) {
-    const latest = entries[0].weight;
-    const prev = entries[1].weight;
-    const change = latest - prev;
-    const avg7 = (() => {
-      const cut = new Date(); cut.setDate(cut.getDate()-7);
-      const w7 = entries.filter(e => new Date(e.date) >= cut).map(e=>e.weight);
-      return w7.length ? (w7.reduce((a,b)=>a+b,0)/w7.length) : latest;
-    })();
-    el('body-stats').innerHTML = `<div class="week-stat-grid" style="grid-template-columns:repeat(3,1fr)">
-      <div class="week-stat"><div class="week-stat-val">${fmt(latest,1)}</div><div class="week-stat-lbl">Latest (kg)</div></div>
-      <div class="week-stat"><div class="week-stat-val" style="color:${change>0?'var(--cal)':'var(--fib)'}">${change>0?'+':''}${fmt(change,1)}</div><div class="week-stat-lbl">Change</div></div>
-      <div class="week-stat"><div class="week-stat-val">${fmt(avg7,1)}</div><div class="week-stat-lbl">7-day avg</div></div>
-    </div>`;
-  } else {
-    el('body-stats').innerHTML = '';
-  }
+function renderBodySummary(){
+  const date=state.ui.activeDate||todayStr();
+  const sel=getBodyByDate(date)||getBodyAtOrBefore(date);
+  const exact=!!getBodyByDate(date);
+  if(!sel){el('bodysum-overview').innerHTML=`<div class="empty-state"><div class="empty-state-icon">🧍</div><p>No body entries yet.<br>Go to Body Log to save your first BIA reading.</p></div>`;el('bodysum-comparison').innerHTML='';el('bodysum-composition').innerHTML='';el('bodysum-trends').innerHTML='';el('bodysum-recent').innerHTML='';return;}
+  const prev=getPrevBody(sel);
+  const cmpCard=(label,value,suffix='')=>{const color=value==null?'var(--text)':(value>0?'var(--cal)':value<0?'var(--fib)':'var(--text)');const shown=value==null?'—':`${value>0?'+':''}${fmt(value,1)}${suffix}`;return`<div class="week-stat"><div class="week-stat-val" style="color:${color}">${shown}</div><div class="week-stat-lbl">${label}</div></div>`;};
+  const entries=getBodySorted();const upto=entries.filter(e=>e.date<=sel.date);const last7=upto.slice(0,7);const last30=upto.slice(0,30);
+  const avgOf=(arr,key)=>{const vals=arr.map(e=>e[key]).filter(v=>v!=null);return vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:null;};
+  const lowestBF=(()=>{const vals=last30.map(e=>e.bodyFatPct).filter(v=>v!=null);return vals.length?Math.min(...vals):null;})();
+  const peakMuscle=(()=>{const vals=last30.map(e=>e.muscleMass).filter(v=>v!=null);return vals.length?Math.max(...vals):null;})();
 
-  // Chart
-  if (bodyChartObj) { bodyChartObj.destroy(); bodyChartObj = null; }
-  if (recent.length > 1) {
-    const sorted = [...recent].sort((a,b) => a.date.localeCompare(b.date));
-    bodyChartObj = new Chart(el('body-chart'), {
-      type:'line',
-      data:{ labels: sorted.map(e=>e.date.slice(5)), datasets:[{
-        data: sorted.map(e=>e.weight),
-        borderColor:'#2B6CE0', backgroundColor:'rgba(43,108,224,.08)',
-        tension:0.4, pointRadius:4, pointBackgroundColor:'#2B6CE0', fill:true,
-      }]},
-      options:{ responsive:true, maintainAspectRatio:false,
-        plugins:{legend:{display:false}},
-        scales:{
-          x:{ticks:{color:textColor,font:{size:11},maxRotation:45,autoSkip:true,maxTicksLimit:10},grid:{color:gridColor}},
-          y:{ticks:{color:textColor,font:{size:11}},grid:{color:gridColor}}
-        }
-      }
-    });
-  }
+  el('bodysum-overview').innerHTML=`<div class="card-header"><div class="card-title" style="margin-bottom:0">Body Summary — ${formatDateDisplay(sel.date)}</div><button class="btn btn-sm btn-secondary" onclick="switchTab('body')">✏️ Log</button></div><div class="macro-summary"><div class="cal-ring-wrap"><svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="var(--surface2)" stroke-width="10"/><circle cx="50" cy="50" r="42" fill="none" stroke="var(--pro)" stroke-width="10" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="0"/></svg><div class="cal-ring-center"><span class="cal-ring-num">${metricDisplay(sel,'weight',1)}</span><span class="cal-ring-lbl">kg</span></div></div><div class="macro-grid"><div class="macro-chip"><div class="macro-chip-top"><div class="macro-chip-dot" style="background:var(--cal)"></div><div class="macro-chip-name">Body Fat</div></div><div class="macro-chip-val">${metricDisplay(sel,'bodyFatPct',1)}<span style="font-size:12px;font-weight:400;color:var(--text2)">%</span></div></div><div class="macro-chip"><div class="macro-chip-top"><div class="macro-chip-dot" style="background:var(--fib)"></div><div class="macro-chip-name">Muscle</div></div><div class="macro-chip-val">${metricDisplay(sel,'muscleMass',1)}<span style="font-size:12px;font-weight:400;color:var(--text2)">kg</span></div></div><div class="macro-chip"><div class="macro-chip-top"><div class="macro-chip-dot" style="background:var(--wat)"></div><div class="macro-chip-name">Water</div></div><div class="macro-chip-val">${metricDisplay(sel,'waterPct',1)}<span style="font-size:12px;font-weight:400;color:var(--text2)">%</span></div></div><div class="macro-chip"><div class="macro-chip-top"><div class="macro-chip-dot" style="background:var(--fat)"></div><div class="macro-chip-name">Visceral</div></div><div class="macro-chip-val">${metricDisplay(sel,'visceralFat',1)}</div></div></div></div><div class="text-sm text-muted">${exact?'Entry for this date.':`Nearest entry: ${formatDateDisplay(sel.date)}.`}${sel.note?` Note: ${sel.note}`:''}</div>`;
 
-  // Log list
-  el('body-log-list').innerHTML = entries.length
-    ? entries.slice(0,20).map(e => `
-      <div class="weight-entry">
-        <span class="weight-date">${e.date.slice(5)}</span>
-        <span class="weight-val">${fmt(e.weight,1)} kg</span>
-        ${e.waist ? `<span class="weight-note">↔ ${e.waist}cm</span>` : ''}
-        <button class="sm-btn" onclick="handleDeleteBodyEntry('${e.id}')" title="Delete">🗑</button>
-      </div>`).join('')
-    : '<div class="text-sm text-muted" style="padding:8px 0">No entries yet.</div>';
+  el('bodysum-comparison').innerHTML=`<div class="card-header"><div class="card-title" style="margin-bottom:0">Change vs Previous</div><div class="text-xs text-muted">${prev?formatDateDisplay(prev.date):'No prev'}</div></div><div class="week-stat-grid" style="grid-template-columns:repeat(4,1fr)">${cmpCard('Weight',prev&&sel.weight!=null&&prev.weight!=null?sel.weight-prev.weight:null,' kg')}${cmpCard('Body Fat',prev&&sel.bodyFatPct!=null&&prev.bodyFatPct!=null?sel.bodyFatPct-prev.bodyFatPct:null,'%')}${cmpCard('Muscle',prev&&sel.muscleMass!=null&&prev.muscleMass!=null?sel.muscleMass-prev.muscleMass:null,' kg')}${cmpCard('Waist',prev&&sel.waist!=null&&prev.waist!=null?sel.waist-prev.waist:null,' cm')}</div>`;
+
+  el('bodysum-composition').innerHTML=`<div class="card-header"><div class="card-title" style="margin-bottom:0">Composition Snapshot</div><div class="text-xs text-muted">${formatDateDisplay(sel.date)}</div></div><div class="comp-grid">${BODY_METRIC_META.map(m=>`<div class="comp-chip"><div class="comp-chip-label">${m.label}</div><div class="comp-chip-value" style="color:${m.color}">${metricDisplay(sel,m.key,m.d)}${m.unit?` <span style="font-size:12px;font-weight:500;color:var(--text2)">${m.unit}</span>`:''}</div></div>`).join('')}</div>`;
+
+  el('bodysum-trends').innerHTML=`<div class="card-header"><div class="card-title" style="margin-bottom:0">Trends</div></div><div class="week-stat-grid" style="grid-template-columns:repeat(4,1fr)"><div class="week-stat"><div class="week-stat-val">${avgOf(last7,'weight')!=null?fmt(avgOf(last7,'weight'),1):'—'}</div><div class="week-stat-lbl">Avg Wt (7)</div></div><div class="week-stat"><div class="week-stat-val">${avgOf(last7,'bodyFatPct')!=null?fmt(avgOf(last7,'bodyFatPct'),1)+'%':'—'}</div><div class="week-stat-lbl">Avg BF (7)</div></div><div class="week-stat"><div class="week-stat-val">${lowestBF!=null?fmt(lowestBF,1)+'%':'—'}</div><div class="week-stat-lbl">Low BF (30)</div></div><div class="week-stat"><div class="week-stat-val">${peakMuscle!=null?fmt(peakMuscle,1):'—'}</div><div class="week-stat-lbl">Peak Muscle</div></div></div>`;
+
+  el('bodysum-recent').innerHTML=`<div class="card-header"><div class="card-title" style="margin-bottom:0">Recent Entries</div><button class="btn btn-sm btn-secondary" onclick="switchTab('body')">Body Log</button></div>${entries.slice(0,5).map(e=>`<div class="history-day" onclick="jumpBodySum('${e.date}')"><div class="history-day-header"><div class="history-day-date">${formatDateDisplay(e.date)}</div><div class="history-day-cals">${metricDisplay(e,'weight',1)} kg</div></div><div style="display:flex;gap:12px;flex-wrap:wrap;font-size:13px"><span style="font-family:var(--mono);color:var(--cal)">${e.bodyFatPct!=null?fmt(e.bodyFatPct,1)+'% BF':'—'}</span><span style="font-family:var(--mono);color:var(--fib)">${e.muscleMass!=null?fmt(e.muscleMass,1)+' kg muscle':'—'}</span></div></div>`).join('')}`;
 }
 
-function saveBodyEntry() {
-  const date = el('body-date').value;
-  const weight = parseFloat(el('body-weight').value);
-  if (!date || !weight) { showToast('Please enter a date and weight'); return; }
-  state.bodyLog.push({
-    id: genId(), date, weight,
-    waist: parseFloat(el('body-waist').value) || null,
-    note: el('body-note').value.trim(),
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  });
-  el('body-weight').value = '';
-  el('body-waist').value = '';
-  el('body-note').value = '';
-  saveData();
-  renderBody();
-  showToast('Weight logged');
+function renderBody(){
+  el('body-date').value=state.ui.activeDate||todayStr();
+  const entries=getBodySorted();const recent=[...entries].slice(0,30).sort((a,b)=>a.date.localeCompare(b.date));const latest=entries[0]||null;
+  const isDark=state.settings.theme==='dark';const textColor=isDark?'#9A988F':'#6B6860';const gridColor=isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.06)';
+  if(latest){
+    const prev=entries[1]||null;
+    const wc=prev&&latest.weight!=null&&prev.weight!=null?latest.weight-prev.weight:null;
+    const bfc=prev&&latest.bodyFatPct!=null&&prev.bodyFatPct!=null?latest.bodyFatPct-prev.bodyFatPct:null;
+    const avg7=(()=>{const cut=new Date();cut.setDate(cut.getDate()-7);const ws=entries.filter(e=>new Date(e.date+'T00:00:00')>=cut&&e.weight!=null).map(e=>e.weight);return ws.length?(ws.reduce((a,b)=>a+b,0)/ws.length):latest.weight;})();
+    el('body-stats').innerHTML=`<div class="week-stat-grid" style="grid-template-columns:repeat(4,1fr)"><div class="week-stat"><div class="week-stat-val">${metricDisplay(latest,'weight',1)}</div><div class="week-stat-lbl">Latest kg</div></div><div class="week-stat"><div class="week-stat-val" style="color:${wc==null?'var(--text)':(wc>0?'var(--cal)':'var(--fib)')}">${wc==null?'—':`${wc>0?'+':''}${fmt(wc,1)}`}</div><div class="week-stat-lbl">Δ Weight</div></div><div class="week-stat"><div class="week-stat-val" style="color:${bfc==null?'var(--text)':(bfc>0?'var(--cal)':'var(--fib)')}">${bfc==null?'—':`${bfc>0?'+':''}${fmt(bfc,1)}%`}</div><div class="week-stat-lbl">Δ BF</div></div><div class="week-stat"><div class="week-stat-val">${avg7!=null?fmt(avg7,1):'—'}</div><div class="week-stat-lbl">7d avg</div></div></div>`;
+    el('body-composition-grid').innerHTML=`<div class="comp-grid">${BODY_METRIC_META.map(m=>`<div class="comp-chip"><div class="comp-chip-label">${m.label}</div><div class="comp-chip-value" style="color:${m.color}">${metricDisplay(latest,m.key,m.d)}${m.unit?` <span style="font-size:12px;font-weight:500;color:var(--text2)">${m.unit}</span>`:''}</div></div>`).join('')}</div>`;
+  }else{el('body-stats').innerHTML='';el('body-composition-grid').innerHTML='<div class="text-sm text-muted">No BIA entries yet.</div>';}
+  if(bodyChartObj){bodyChartObj.destroy();bodyChartObj=null;}
+  if(recent.length>1){bodyChartObj=new Chart(el('body-chart'),{type:'line',data:{labels:recent.map(e=>e.date.slice(5)),datasets:[{data:recent.map(e=>e.weight??null),borderColor:'#2B6CE0',backgroundColor:'rgba(43,108,224,.08)',tension:.35,pointRadius:4,pointBackgroundColor:'#2B6CE0',fill:true,spanGaps:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:textColor,font:{size:11},maxRotation:45,autoSkip:true,maxTicksLimit:10},grid:{color:gridColor}},y:{ticks:{color:textColor,font:{size:11}},grid:{color:gridColor}}}}});}
+  if(bodyFatChartObj){bodyFatChartObj.destroy();bodyFatChartObj=null;}
+  if(recent.length>1&&recent.some(e=>e.bodyFatPct!=null)){bodyFatChartObj=new Chart(el('body-fat-chart'),{type:'line',data:{labels:recent.map(e=>e.date.slice(5)),datasets:[{data:recent.map(e=>e.bodyFatPct??null),borderColor:'#E05A2B',backgroundColor:'rgba(224,90,43,.08)',tension:.35,pointRadius:4,pointBackgroundColor:'#E05A2B',fill:true,spanGaps:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:textColor,font:{size:11},maxRotation:45,autoSkip:true,maxTicksLimit:10},grid:{color:gridColor}},y:{ticks:{color:textColor,font:{size:11},callback:v=>v+'%'},grid:{color:gridColor}}}}});}
+  el('body-log-list').innerHTML=entries.length?entries.slice(0,20).map(e=>`<div class="weight-entry" style="align-items:flex-start"><div style="min-width:76px"><div class="weight-date">${e.date.slice(5)}</div><div class="text-xs text-muted">${e.note||''}</div></div><div style="flex:1;min-width:0"><div class="weight-val">${metricDisplay(e,'weight',1)} kg${e.bodyFatPct!=null?` · ${fmt(e.bodyFatPct,1)}% BF`:''}</div><div class="text-xs text-muted" style="margin-top:4px;display:flex;gap:10px;flex-wrap:wrap">${e.skeletalMusclePct!=null?`<span>SM ${fmt(e.skeletalMusclePct,1)}%</span>`:''}${e.muscleMass!=null?`<span>Muscle ${fmt(e.muscleMass,1)}kg</span>`:''}${e.leanMass!=null?`<span>Lean ${fmt(e.leanMass,1)}kg</span>`:''}${e.fatMass!=null?`<span>Fat ${fmt(e.fatMass,1)}kg</span>`:''}${e.waterPct!=null?`<span>Water ${fmt(e.waterPct,1)}%</span>`:''}${e.visceralFat!=null?`<span>VF ${fmt(e.visceralFat,1)}</span>`:''}${e.bmi!=null?`<span>BMI ${fmt(e.bmi,1)}</span>`:''}${e.bmr!=null?`<span>BMR ${fmt(e.bmr,0)}</span>`:''}${e.waist!=null?`<span>Waist ${fmt(e.waist,1)}cm</span>`:''}</div></div><button class="sm-btn" onclick="handleDeleteBodyEntry('${e.id}')" title="Delete">🗑</button></div>`).join(''):'<div class="text-sm text-muted" style="padding:8px 0">No entries yet.</div>';
 }
 
-function handleDeleteBodyEntry(id) {
-  showConfirm('Delete entry?','Remove this body measurement?','Delete',true).then(ok => {
-    if (ok) { state.bodyLog = state.bodyLog.filter(e => e.id !== id); saveData(); renderBody(); showToast('Deleted'); }
-  });
+function saveBodyEntry(){
+  const date=el('body-date').value;const weight=numOrNull(el('body-weight').value);
+  if(!date||weight===null){showToast('Please enter date and weight');return;}
+  state.bodyLog.push({id:genId(),date,weight,bodyFatPct:numOrNull(el('body-fat-pct').value),skeletalMusclePct:numOrNull(el('body-skeletal-muscle-pct').value),muscleMass:numOrNull(el('body-muscle-mass').value),leanMass:numOrNull(el('body-lean-mass').value),fatMass:numOrNull(el('body-fat-mass').value),waterPct:numOrNull(el('body-water-pct').value),proteinPct:numOrNull(el('body-protein-pct').value),boneMass:numOrNull(el('body-bone-mass').value),visceralFat:numOrNull(el('body-visceral-fat').value),subcutaneousFatPct:numOrNull(el('body-subcutaneous-fat-pct').value),bmi:numOrNull(el('body-bmi').value),bmr:numOrNull(el('body-bmr').value),metabolicAge:numOrNull(el('body-metabolic-age').value),waist:numOrNull(el('body-waist').value),note:el('body-note').value.trim(),createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
+  ['body-weight','body-fat-pct','body-skeletal-muscle-pct','body-muscle-mass','body-lean-mass','body-fat-mass','body-water-pct','body-protein-pct','body-bone-mass','body-visceral-fat','body-subcutaneous-fat-pct','body-bmi','body-bmr','body-metabolic-age','body-waist','body-note'].forEach(id=>el(id).value='');
+  saveData();renderBody();renderBodySummary();showToast('Body composition logged');
+}
+
+function handleDeleteBodyEntry(id){
+  showConfirm('Delete entry?','Remove this body measurement?','Delete',true).then(ok=>{if(ok){state.bodyLog=state.bodyLog.filter(e=>e.id!==id);saveData();renderBody();renderBodySummary();showToast('Deleted');}});
 }
 
 /* ════════════════════════════════════════
    16. SETTINGS PAGE
 ════════════════════════════════════════ */
+function refreshLocalBackupStatus() {
+  const sessions = Object.keys(state.dailyLogs || {}).length;
+  const latestSession = Object.keys(state.dailyLogs || {}).sort().slice(-1)[0] || 'none';
+  const note = `Status: This browser currently stores ${sessions} session(s). Latest session date: ${latestSession}.`;
+  if (el('local-backup-status')) el('local-backup-status').textContent = note;
+}
+
 function renderSettings() {
   const T = state.settings.targets;
-  const fb = ensureFirebaseSettings();
-  el('s-cal').value  = T.cal;
-  el('s-pro').value  = T.pro;
-  el('s-carb').value = T.carb;
-  el('s-fat').value  = T.fat;
-  el('s-fib').value  = T.fib;
-  el('s-wat').value  = T.wat;
-  if (el('firebase-config')) el('firebase-config').value = fb.config || '';
-  if (el('firebase-collection')) el('firebase-collection').value = fb.collection || DEFAULT_FIREBASE_SYNC.collection;
-  if (el('firebase-doc-id')) el('firebase-doc-id').value = fb.docId || DEFAULT_FIREBASE_SYNC.docId;
+  const rtdb = ensureRTDBSettings();
+  el('s-cal').value = T.cal; el('s-pro').value = T.pro; el('s-carb').value = T.carb; el('s-fat').value = T.fat; el('s-fib').value = T.fib; el('s-wat').value = T.wat;
+  const ids = {'rtdb-api-key':'apiKey','rtdb-auth-domain':'authDomain','rtdb-project-id':'projectId','rtdb-url':'databaseURL','rtdb-storage-bucket':'storageBucket','rtdb-sender-id':'messagingSenderId','rtdb-app-id':'appId','rtdb-sync-key':'syncKey'};
+  Object.entries(ids).forEach(([id,key]) => { const node = el(id); if (node) node.value = rtdb[key] || ''; });
+  if (el('rtdb-auto-push')) el('rtdb-auto-push').checked = !!rtdb.autoPush;
   updateSyncUI();
+  refreshLocalBackupStatus();
 }
 
 function saveTargets() {
   state.settings.targets = {
-    cal:  parseInt(el('s-cal').value)  || DEFAULT_TARGETS.cal,
-    pro:  parseInt(el('s-pro').value)  || DEFAULT_TARGETS.pro,
+    cal: parseInt(el('s-cal').value) || DEFAULT_TARGETS.cal,
+    pro: parseInt(el('s-pro').value) || DEFAULT_TARGETS.pro,
     carb: parseInt(el('s-carb').value) || DEFAULT_TARGETS.carb,
-    fat:  parseInt(el('s-fat').value)  || DEFAULT_TARGETS.fat,
-    fib:  parseInt(el('s-fib').value)  || DEFAULT_TARGETS.fib,
-    wat:  parseInt(el('s-wat').value)  || DEFAULT_TARGETS.wat,
+    fat: parseInt(el('s-fat').value) || DEFAULT_TARGETS.fat,
+    fib: parseInt(el('s-fib').value) || DEFAULT_TARGETS.fib,
+    wat: parseInt(el('s-wat').value) || DEFAULT_TARGETS.wat,
   };
-  saveData();
-  renderDashboard();
-  showToast('Targets saved');
+  saveData(); renderDashboard(); showToast('Targets saved');
 }
 
 function updateSyncUI() {
-  const m = state.meta;
-  const fb = ensureFirebaseSettings();
-  el('device-id-display').textContent = m.deviceId || '—';
-  el('last-export-display').textContent = m.lastExportedAt ? new Date(m.lastExportedAt).toLocaleString() : 'Never';
-  el('last-import-display').textContent = m.lastImportedAt ? new Date(m.lastImportedAt).toLocaleString() : 'Never';
-  const dot = el('firebase-sync-dot');
-  const label = el('firebase-sync-label');
-  const detail = el('firebase-sync-detail');
-  const mode = el('firebase-sync-mode');
-  if (!dot || !label || !detail || !mode) return;
-  const map = {
-    local:      { dot:'local',    label:'Local Only', detail:'No Firebase connection. The app saves only to this browser.', mode:'Local' },
-    connecting: { dot:'firebase', label:'Connecting…', detail:'Trying to connect to Firestore real-time listener.', mode:'Firebase' },
-    connected:  { dot:'synced',   label:'Connected', detail: fb.lastRemoteAt ? `Live sync active · last remote update ${new Date(fb.lastRemoteAt).toLocaleString()}` : 'Live sync active. Phone and desktop should update automatically.', mode:'Firebase' },
-    error:      { dot:'error',    label:'Connection Error', detail: fb.lastError || 'Check Firebase config, Firestore, and rules.', mode:'Firebase' },
+  const m = state.meta; const rtdb = ensureRTDBSettings();
+  const did = el('device-id-display'); const led = el('last-export-display'); const lid = el('last-import-display');
+  if (did) did.textContent = m.deviceId || '—'; if (led) led.textContent = m.lastExportedAt ? new Date(m.lastExportedAt).toLocaleString() : 'Never'; if (lid) lid.textContent = m.lastImportedAt ? new Date(m.lastImportedAt).toLocaleString() : 'Never';
+  const box = el('rtdb-cloud-status'); const dot = el('rtdb-sync-dot'); const label = el('rtdb-sync-label'); const detail = el('rtdb-sync-detail'); const mode = el('rtdb-sync-mode');
+  if (!box || !dot || !label || !detail || !mode) return;
+  const viewMap = {
+    local: {dot:'local', label:'Local Only', detail:'No Realtime Database connection. The app saves only to this browser.', mode:'Local', line:'<span class="offline">● Not connected</span>'},
+    connecting: {dot:'firebase', label:'Connecting…', detail:'Trying to connect to Realtime Database listener.', mode:'RTDB', line:'<span class="offline">● Connecting...</span>'},
+    connected: {dot:'synced', label:'Connected', detail:rtdb.lastRemoteAt ? `Realtime sync active · last remote update ${new Date(rtdb.lastRemoteAt).toLocaleString()}` : 'Realtime sync active. Phone and desktop should update automatically.', mode:'RTDB', line:'<span class="online">● Connected</span>'},
+    error: {dot:'error', label:'Connection Error', detail:rtdb.lastError || 'Check config, database URL, sync key, and RTDB rules.', mode:'RTDB', line:'<span class="offline">● Connection error</span>'},
   };
-  const meta = map[fb.status || 'local'] || map.local;
-  dot.className = `sync-dot ${meta.dot}`;
-  label.textContent = meta.label;
-  detail.textContent = meta.detail;
-  mode.textContent = meta.mode;
+  const view = viewMap[rtdb.status || 'local'];
+  dot.className = `sync-dot ${view.dot}`; label.textContent = view.label; detail.textContent = view.detail; mode.textContent = view.mode;
+  box.innerHTML = `${view.line} <span id="rtdb-cloud-status-text">Sync Key: ${rtdb.syncKey || '—'}</span>.`;
 }
 
-function saveFirebaseConfigFromInputs() {
-  const fb = ensureFirebaseSettings();
-  fb.config = (el('firebase-config')?.value || '').trim();
-  fb.collection = (el('firebase-collection')?.value || DEFAULT_FIREBASE_SYNC.collection).trim() || DEFAULT_FIREBASE_SYNC.collection;
-  fb.docId = (el('firebase-doc-id')?.value || DEFAULT_FIREBASE_SYNC.docId).trim() || DEFAULT_FIREBASE_SYNC.docId;
-  saveData();
-  updateSyncUI();
+function saveRTDBConfigFromInputs() {
+  const rtdb = ensureRTDBSettings();
+  const ids = {'rtdb-api-key':'apiKey','rtdb-auth-domain':'authDomain','rtdb-project-id':'projectId','rtdb-url':'databaseURL','rtdb-storage-bucket':'storageBucket','rtdb-sender-id':'messagingSenderId','rtdb-app-id':'appId','rtdb-sync-key':'syncKey'};
+  Object.entries(ids).forEach(([id,key]) => { const node = el(id); if (node) rtdb[key] = (node.value || '').trim(); });
+  rtdb.syncKey = rtdb.syncKey || 'vittawit-nutrition';
+  rtdb.autoPush = !!el('rtdb-auto-push')?.checked;
+  saveData(); updateSyncUI();
 }
 
-async function initFirebaseSync() {
-  const fb = ensureFirebaseSettings();
-  if (!fb.enabled || !fb.config) {
-    fb.status = 'local';
-    updateSyncUI();
-    return;
-  }
-  fb.status = 'connecting';
-  fb.lastError = '';
-  updateSyncUI();
+function buildRTDBConfig() { const rtdb = ensureRTDBSettings(); return { apiKey:rtdb.apiKey, authDomain:rtdb.authDomain, projectId:rtdb.projectId, databaseURL:rtdb.databaseURL, storageBucket:rtdb.storageBucket, messagingSenderId:rtdb.messagingSenderId, appId:rtdb.appId }; }
+
+async function initRTDBSync() {
+  const rtdb = ensureRTDBSettings(); saveRTDBConfigFromInputs(); if (!rtdb.enabled) rtdb.enabled = true;
+  const config = buildRTDBConfig();
+  if (!config.apiKey || !config.projectId || !config.databaseURL || !config.appId) { rtdb.status='error'; rtdb.lastError='Please fill API Key, Project ID, Database URL, and App ID.'; updateSyncUI(); showToast('Missing Firebase fields', 3500); return; }
+  rtdb.status='connecting'; rtdb.lastError=''; updateSyncUI();
   try {
-    const config = JSON.parse(fb.config);
-    const [{ initializeApp }, firestoreMod] = await Promise.all([
+    const [{ initializeApp }, databaseMod] = await Promise.all([
       import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
-      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js')
     ]);
-    firebaseSync.modules = firestoreMod;
-    if (!firebaseSync.app) {
-      firebaseSync.app = initializeApp(config);
-    }
-    firebaseSync.db = firestoreMod.getFirestore(firebaseSync.app);
-    const docRef = firestoreMod.doc(firebaseSync.db, fb.collection, fb.docId);
-    if (firebaseSync.unsubscribe) firebaseSync.unsubscribe();
-    firebaseSync.unsubscribe = firestoreMod.onSnapshot(docRef, (snap) => {
-      const payload = snap.data();
-      if (!payload || !payload.state) return;
-      const remoteUpdatedAt = parseIsoTime(payload.updatedAt || payload.state?.meta?.updatedAt);
-      const localUpdatedAt = parseIsoTime(state.meta.updatedAt);
-      if (payload.deviceId === state.meta.deviceId && remoteUpdatedAt <= localUpdatedAt) return;
-      if (remoteUpdatedAt && remoteUpdatedAt <= localUpdatedAt) return;
-      firebaseSync.isApplyingRemote = true;
-      const myDeviceId = state.meta.deviceId;
-      const currentFirebaseSettings = { ...fb };
-      state = deepMerge(state, payload.state);
-      state.meta.deviceId = myDeviceId;
-      state.settings.firebase = { ...DEFAULT_FIREBASE_SYNC, ...currentFirebaseSettings, enabled:true, status:'connected', lastRemoteAt: payload.updatedAt || new Date().toISOString() };
-      state.meta.lastSyncedAt = payload.updatedAt || new Date().toISOString();
-      localStorage.setItem(LS_KEY, JSON.stringify(state));
-      renderAll();
-      if (state.ui.activeTab === 'weekly') renderWeekly();
-      if (state.ui.activeTab === 'body') renderBody();
-      if (state.ui.activeTab === 'settings') renderSettings();
-      firebaseSync.isApplyingRemote = false;
-      showToast('Synced from Firebase');
-    }, (error) => {
-      fb.status = 'error';
-      fb.lastError = error?.message || 'Listener failed';
-      updateSyncUI();
-    });
-    firebaseSync.connected = true;
-    fb.status = 'connected';
-    saveData();
-    updateSyncUI();
-    await pushStateToFirebase('initial-connect');
-    showToast('Firebase sync connected');
-  } catch (error) {
-    fb.status = 'error';
-    fb.lastError = error?.message || 'Could not initialize Firebase';
-    saveData();
-    updateSyncUI();
-    showToast('Firebase connection failed', 3500);
-  }
+    rtdbSync.modules = databaseMod;
+    if (!rtdbSync.app) rtdbSync.app = initializeApp(config);
+    rtdbSync.db = databaseMod.getDatabase(rtdbSync.app, config.databaseURL);
+    const syncRef = databaseMod.ref(rtdbSync.db, currentRTDBPath());
+    if (rtdbSync.unsubscribe) rtdbSync.unsubscribe();
+    rtdbSync.unsubscribe = databaseMod.onValue(syncRef, (snapshot) => {
+      const payload = snapshot.val(); if (!payload || !payload.state) return;
+      const remoteUpdatedAt = parseIsoTime(payload.updatedAt || payload.state?.meta?.updatedAt); const localUpdatedAt = parseIsoTime(state.meta.updatedAt);
+      if (payload.deviceId === state.meta.deviceId && remoteUpdatedAt <= localUpdatedAt) return; if (remoteUpdatedAt && remoteUpdatedAt <= localUpdatedAt) return;
+      rtdbSync.isApplyingRemote = true;
+      const myDeviceId = state.meta.deviceId; const currentSettings = { ...rtdb };
+      state = deepMerge(state, payload.state); state.meta.deviceId = myDeviceId; state.settings.rtdb = { ...DEFAULT_RTDB_SYNC, ...currentSettings, enabled:true, status:'connected', lastRemoteAt: payload.updatedAt || new Date().toISOString() };
+      localStorage.setItem(LS_KEY, JSON.stringify(state)); renderAll(); if (state.ui.activeTab === 'settings') renderSettings(); rtdbSync.isApplyingRemote = false; showToast('Synced from cloud');
+    }, (error) => { rtdb.status='error'; rtdb.lastError=error?.message || 'Listener failed'; updateSyncUI(); });
+    rtdbSync.connected = true; rtdb.status='connected'; saveData(); updateSyncUI(); await pushStateToRTDB('initial-connect'); showToast('Cloud connected');
+  } catch (error) { rtdb.status='error'; rtdb.lastError=error?.message || 'Could not initialize Realtime Database'; saveData(); updateSyncUI(); showToast('Realtime DB connection failed', 3500); }
 }
 
-function disconnectFirebaseSync() {
-  if (firebaseSync.unsubscribe) firebaseSync.unsubscribe();
-  firebaseSync.unsubscribe = null;
-  firebaseSync.connected = false;
-  firebaseSync.modules = null;
-  firebaseSync.db = null;
-  const fb = ensureFirebaseSettings();
-  fb.enabled = false;
-  fb.status = 'local';
-  fb.lastError = '';
-  saveData();
-  updateSyncUI();
-  showToast('Firebase sync disconnected');
+function disconnectRTDBSync() {
+  if (rtdbSync.unsubscribe) rtdbSync.unsubscribe(); rtdbSync.unsubscribe = null; rtdbSync.connected = false; rtdbSync.modules = null; rtdbSync.db = null;
+  const rtdb = ensureRTDBSettings(); rtdb.enabled = false; rtdb.status = 'local'; rtdb.lastError=''; saveData(); updateSyncUI(); showToast('Cloud disconnected');
 }
 
-async function pushStateToFirebase(reason='manual') {
-  const fb = ensureFirebaseSettings();
-  if (!fb.enabled || !firebaseSync.connected || !firebaseSync.db || !firebaseSync.modules || firebaseSync.isApplyingRemote) return;
+async function pushStateToRTDB(reason='manual') {
+  const rtdb = ensureRTDBSettings(); if (!rtdb.enabled || !rtdbSync.connected || !rtdbSync.db || !rtdbSync.modules || rtdbSync.isApplyingRemote) return;
+  try { rtdbSync.isPushing = true; const { ref, set } = rtdbSync.modules; const syncRef = ref(rtdbSync.db, currentRTDBPath()); await set(syncRef, { state: JSON.parse(JSON.stringify(state)), updatedAt: new Date().toISOString(), deviceId: state.meta.deviceId, version: APP_VERSION, reason }); rtdb.status='connected'; rtdb.lastRemoteAt = new Date().toISOString(); state.meta.lastSyncedAt = rtdb.lastRemoteAt; updateSyncUI(); } catch (error) { rtdb.status='error'; rtdb.lastError=error?.message || 'Push failed'; updateSyncUI(); } finally { rtdbSync.isPushing = false; }
+}
+
+async function pullStateFromRTDB() {
+  saveRTDBConfigFromInputs(); const config = buildRTDBConfig(); if (!config.apiKey || !config.projectId || !config.databaseURL || !config.appId) { showToast('Missing Firebase fields', 3500); return; }
   try {
-    firebaseSync.isPushing = true;
-    const { doc, setDoc, serverTimestamp } = firebaseSync.modules;
-    const docRef = doc(firebaseSync.db, fb.collection, fb.docId);
-    const snapshot = JSON.parse(JSON.stringify(state));
-    await setDoc(docRef, {
-      state: snapshot,
-      updatedAt: new Date().toISOString(),
-      deviceId: state.meta.deviceId,
-      version: APP_VERSION,
-      reason,
-      serverWrittenAt: serverTimestamp(),
-    }, { merge: true });
-    fb.status = 'connected';
-    fb.lastRemoteAt = new Date().toISOString();
-    fb.lastPushedAt = fb.lastRemoteAt;
-    state.meta.lastSyncedAt = fb.lastRemoteAt;
-    updateSyncUI();
-  } catch (error) {
-    fb.status = 'error';
-    fb.lastError = error?.message || 'Push failed';
-    updateSyncUI();
-    console.warn('[NutriLog] Firebase push failed:', error);
-  } finally {
-    firebaseSync.isPushing = false;
-  }
+    const [{ initializeApp }, databaseMod] = await Promise.all([
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js')
+    ]);
+    if (!rtdbSync.app) rtdbSync.app = initializeApp(config);
+    const db = databaseMod.getDatabase(rtdbSync.app, config.databaseURL);
+    const snap = await databaseMod.get(databaseMod.ref(db, currentRTDBPath())); const payload = snap.val();
+    if (!payload || !payload.state) { showToast('No cloud data found', 3000); return; }
+    const myDeviceId = state.meta.deviceId; const currentSettings = { ...ensureRTDBSettings() };
+    state = deepMerge(state, payload.state); state.meta.deviceId = myDeviceId; state.settings.rtdb = { ...DEFAULT_RTDB_SYNC, ...currentSettings, enabled:true, status:'connected', lastRemoteAt: payload.updatedAt || new Date().toISOString() };
+    localStorage.setItem(LS_KEY, JSON.stringify(state)); renderAll(); showToast('Pulled cloud data to local');
+  } catch (error) { showToast('Pull failed: ' + (error?.message || error), 4000); }
+}
+
+function clearLocalDataOnly() {
+  showConfirm('Clear local browser data?', 'This clears the current browser copy only. Cloud data is not deleted.', 'Clear', true).then(ok => {
+    if (!ok) return;
+    const currentRTDB = { ...(state.settings.rtdb || DEFAULT_RTDB_SYNC) };
+    localStorage.removeItem(LS_KEY);
+    state = { meta:{ version:APP_VERSION, deviceId: state.meta.deviceId || ('dev_' + genId()), createdAt:new Date().toISOString(), updatedAt:null, lastSyncedAt:null, lastExportedAt:null, lastImportedAt:null }, settings:{ targets:{...DEFAULT_TARGETS}, theme:document.documentElement.dataset.theme || 'light', units:'metric', rtdb:{ ...DEFAULT_RTDB_SYNC, ...currentRTDB, enabled:false, status:'local' } }, dailyLogs:{}, foodLibrary: DEFAULT_LIB.map(f => ({ id: genId(), favorite:false, createdAt:new Date().toISOString(), updatedAt:new Date().toISOString(), ...f })), bodyLog:[], ui:{ activeDate:todayStr(), activeTab:'settings' } };
+    saveData(); renderAll(); refreshLocalBackupStatus(); showToast('Local browser data cleared');
+  });
 }
 
 /* ════════════════════════════════════════
@@ -2288,7 +2259,8 @@ async function handleImport(file) {
     saveData();
     renderAll();
     updateSyncUI();
-    if (state.settings.firebase?.enabled && firebaseSync.connected) pushStateToFirebase('import');
+    refreshLocalBackupStatus();
+    if (state.settings.rtdb?.enabled && state.settings.rtdb?.autoPush && rtdbSync.connected) pushStateToRTDB('import');
     showToast('Data imported successfully');
   } catch(err) {
     showToast('Import failed: ' + err, 4000);
@@ -2303,6 +2275,7 @@ function renderAll() {
   renderMeals();
   renderLibrary();
   renderHistory();
+  renderBodySummary();
   renderSettings();
 }
 
@@ -2314,6 +2287,7 @@ function switchTab(tabName) {
   qsa('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
   qsa('.page').forEach(p => p.classList.toggle('active', p.id === 'page-'+tabName));
   if (tabName === 'weekly') renderWeekly();
+  if (tabName === 'body-summary') renderBodySummary();
   if (tabName === 'body')   renderBody();
   if (tabName === 'settings') renderSettings();
   if (tabName === 'history') renderHistory();
@@ -2345,18 +2319,20 @@ function init() {
   if (!state.ui.activeDate) state.ui.activeDate = todayStr();
 
   // Theme
-  ensureFirebaseSettings();
+  ensureRTDBSettings();
   applyTheme(state.settings.theme || 'light');
 
   // Build date strips
   makeDateStrip('dash-date-strip', () => { renderDashboard(); });
   makeDateStrip('meals-date-strip', () => { renderMeals(); });
+  makeDateStrip('bodysum-date-strip', () => { renderBodySummary(); });
 
   saveData();
 
   // Initial render
   renderAll();
-  if (state.settings.firebase?.enabled && state.settings.firebase?.config) initFirebaseSync();
+  refreshLocalBackupStatus();
+  if (state.settings.rtdb?.enabled && (state.settings.rtdb?.apiKey || state.settings.rtdb?.projectId)) initRTDBSync();
 
   // ── Event Listeners ──────────────────────
 
@@ -2401,26 +2377,20 @@ function init() {
 
   // Settings
   el('save-targets-btn').onclick = saveTargets;
-  el('firebase-save-config-btn').onclick = () => { saveFirebaseConfigFromInputs(); showToast('Firebase config saved locally'); };
-  el('firebase-connect-btn').onclick = async () => {
-    saveFirebaseConfigFromInputs();
-    state.settings.firebase.enabled = true;
-    saveData();
-    await initFirebaseSync();
-  };
-  el('firebase-push-btn').onclick = async () => {
-    saveFirebaseConfigFromInputs();
-    if (!state.settings.firebase.enabled) state.settings.firebase.enabled = true;
-    if (!firebaseSync.connected) await initFirebaseSync();
-    await pushStateToFirebase('manual-push');
-    showToast('Push complete');
-  };
-  el('firebase-disconnect-btn').onclick = disconnectFirebaseSync;
 
-  // Export / Import
+  // Export / Import / Local backup
   el('export-btn').onclick = exportData;
   el('import-btn-trigger').onclick = () => el('import-file-input').click();
   el('import-file-input').onchange = (e) => { if(e.target.files[0]) handleImport(e.target.files[0]); };
+  el('clear-local-data-btn').onclick = clearLocalDataOnly;
+  el('refresh-sync-status-btn').onclick = () => { updateSyncUI(); refreshLocalBackupStatus(); showToast('Status refreshed'); };
+
+  // RTDB cloud controls
+  el('rtdb-save-config-btn').onclick = () => { saveRTDBConfigFromInputs(); showToast('Cloud config saved locally'); };
+  el('rtdb-connect-btn').onclick = async () => { await initRTDBSync(); };
+  el('rtdb-push-btn').onclick = async () => { saveRTDBConfigFromInputs(); state.settings.rtdb.enabled = true; if (!rtdbSync.connected) await initRTDBSync(); await pushStateToRTDB('manual-push'); showToast('Pushed local data to cloud'); };
+  el('rtdb-pull-btn').onclick = pullStateFromRTDB;
+  el('rtdb-disconnect-btn').onclick = disconnectRTDBSync;
 
   // Clear data
   el('clear-today-btn').onclick = () => {
