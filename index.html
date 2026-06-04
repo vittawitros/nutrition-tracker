@@ -479,6 +479,28 @@ textarea.form-input { resize: vertical; min-height: 80px; }
 /* ─── Chart Canvas ─────────────────────────────────────────── */
 .chart-wrap { position: relative; width: 100%; height: 180px; margin-top: 8px; }
 canvas { width: 100% !important; }
+/* ─── Body Composition Grid ────────────────────────────────── */
+.comp-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+.comp-chip {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+.comp-chip-label {
+  font-size: 11px;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.comp-chip-value {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+@media (min-width: 720px) {
+  .comp-grid { grid-template-columns:repeat(3,1fr); }
+}
 
 /* ─── Food Library ─────────────────────────────────────────── */
 .lib-item {
@@ -631,6 +653,7 @@ canvas { width: 100% !important; }
     <button class="tab-btn" data-tab="library">Library</button>
     <button class="tab-btn" data-tab="history">History</button>
     <button class="tab-btn" data-tab="weekly">Weekly</button>
+    <button class="tab-btn" data-tab="body-summary">Body Summary</button>
     <button class="tab-btn" data-tab="body">Body</button>
     <button class="tab-btn" data-tab="settings">Settings</button>
   </nav>
@@ -727,13 +750,26 @@ canvas { width: 100% !important; }
   </section>
 
   <!-- ════════════════════════════════════════
+       PAGE: BODY SUMMARY
+  ════════════════════════════════════════ -->
+  <section class="page" id="page-body-summary">
+    <div id="bodysum-date-strip"></div>
+    <div class="card" id="bodysum-overview"></div>
+    <div class="card" id="bodysum-comparison"></div>
+    <div class="card" id="bodysum-composition"></div>
+    <div class="card" id="bodysum-trends"></div>
+    <div class="card" id="bodysum-recent"></div>
+  </section>
+
+
+  <!-- ════════════════════════════════════════
        PAGE: BODY
   ════════════════════════════════════════ -->
   <section class="page" id="page-body">
-    <div class="section-title">Body Tracking</div>
+    <div class="section-title">Body Tracking & BIA</div>
     <div class="card">
       <div class="card-header">
-        <div class="card-title" style="margin-bottom:0">Log Weight</div>
+        <div class="card-title" style="margin-bottom:0">Log BIA / Body Composition</div>
       </div>
       <div class="form-row mb-12">
         <div class="form-group" style="margin-bottom:0">
@@ -741,27 +777,103 @@ canvas { width: 100% !important; }
           <input type="date" class="form-input" id="body-date">
         </div>
         <div class="form-group" style="margin-bottom:0">
-          <label class="form-label">Weight (kg)</label>
+          <label class="form-label">Weight (kg) *</label>
           <input type="number" class="form-input" id="body-weight" placeholder="70.5" step="0.1" min="0">
+        </div>
+      </div>
+
+      <div class="form-section-title">Primary Body Composition</div>
+      <div class="form-row-3 mb-12">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Body Fat (%)</label>
+          <input type="number" class="form-input" id="body-fat-pct" placeholder="18.5" step="0.1" min="0">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Skeletal Muscle (%)</label>
+          <input type="number" class="form-input" id="body-skeletal-muscle-pct" placeholder="42.0" step="0.1" min="0">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Muscle Mass (kg)</label>
+          <input type="number" class="form-input" id="body-muscle-mass" placeholder="32.0" step="0.1" min="0">
+        </div>
+      </div>
+      <div class="form-row-3 mb-12">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Lean Mass (kg)</label>
+          <input type="number" class="form-input" id="body-lean-mass" placeholder="55.0" step="0.1" min="0">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Fat Mass (kg)</label>
+          <input type="number" class="form-input" id="body-fat-mass" placeholder="13.0" step="0.1" min="0">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Body Water (%)</label>
+          <input type="number" class="form-input" id="body-water-pct" placeholder="58.0" step="0.1" min="0">
+        </div>
+      </div>
+
+      <div class="form-section-title">Additional BIA Metrics</div>
+      <div class="form-row-3 mb-12">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Protein (%)</label>
+          <input type="number" class="form-input" id="body-protein-pct" placeholder="18.0" step="0.1" min="0">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Bone Mass (kg)</label>
+          <input type="number" class="form-input" id="body-bone-mass" placeholder="3.0" step="0.1" min="0">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Visceral Fat</label>
+          <input type="number" class="form-input" id="body-visceral-fat" placeholder="7" step="0.1" min="0">
+        </div>
+      </div>
+      <div class="form-row-3 mb-12">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Subcutaneous Fat (%)</label>
+          <input type="number" class="form-input" id="body-subcutaneous-fat-pct" placeholder="15.0" step="0.1" min="0">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">BMI</label>
+          <input type="number" class="form-input" id="body-bmi" placeholder="22.1" step="0.1" min="0">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">BMR (kcal)</label>
+          <input type="number" class="form-input" id="body-bmr" placeholder="1650" step="1" min="0">
         </div>
       </div>
       <div class="form-row mb-12">
         <div class="form-group" style="margin-bottom:0">
-          <label class="form-label">Waist (cm) <span class="text-muted" style="font-size:10px">optional</span></label>
-          <input type="number" class="form-input" id="body-waist" placeholder="80" step="0.5" min="0">
+          <label class="form-label">Metabolic Age</label>
+          <input type="number" class="form-input" id="body-metabolic-age" placeholder="28" step="1" min="0">
         </div>
         <div class="form-group" style="margin-bottom:0">
-          <label class="form-label">Notes</label>
-          <input type="text" class="form-input" id="body-note" placeholder="Post-workout…">
+          <label class="form-label">Waist (cm)</label>
+          <input type="number" class="form-input" id="body-waist" placeholder="80" step="0.1" min="0">
         </div>
       </div>
-      <button class="btn btn-primary btn-block" id="body-save-btn">Save Entry</button>
+      <div class="form-group mb-12" style="margin-bottom:12px">
+        <label class="form-label">Notes</label>
+        <input type="text" class="form-input" id="body-note" placeholder="Fasted AM, after training, hydration low...">
+      </div>
+      <button class="btn btn-primary btn-block" id="body-save-btn">Save Body Entry</button>
     </div>
+
+    <div class="card">
+      <div class="card-title">Latest Body Composition Snapshot</div>
+      <div id="body-stats" style="margin-bottom:10px"></div>
+      <div id="body-composition-grid"></div>
+    </div>
+
     <div class="card">
       <div class="card-title">Weight Trend</div>
-      <div id="body-stats" style="margin-bottom:10px"></div>
       <div class="chart-wrap"><canvas id="body-chart" role="img" aria-label="Body weight trend chart"></canvas></div>
     </div>
+
+    <div class="card">
+      <div class="card-title">Body Fat Trend</div>
+      <div class="chart-wrap"><canvas id="body-fat-chart" role="img" aria-label="Body fat trend chart"></canvas></div>
+    </div>
+
     <div class="card">
       <div class="card-title">Log Entries</div>
       <div id="body-log-list"></div>
@@ -1044,6 +1156,23 @@ const MEAL_META = {
   other:     { label:'Other',     icon:'🍽️' },
 };
 const DEFAULT_TARGETS = { cal:2000, pro:150, carb:250, fat:65, fib:30, wat:2500 };
+const BODY_METRIC_META = [
+  { key:'weight', label:'Weight', unit:'kg', color:'#2B6CE0', decimals:1 },
+  { key:'bodyFatPct', label:'Body Fat', unit:'%', color:'#E05A2B', decimals:1 },
+  { key:'skeletalMusclePct', label:'Skeletal Muscle', unit:'%', color:'#27AE60', decimals:1 },
+  { key:'muscleMass', label:'Muscle Mass', unit:'kg', color:'#27AE60', decimals:1 },
+  { key:'leanMass', label:'Lean Mass', unit:'kg', color:'#1A9BBF', decimals:1 },
+  { key:'fatMass', label:'Fat Mass', unit:'kg', color:'#9B59B6', decimals:1 },
+  { key:'waterPct', label:'Body Water', unit:'%', color:'#1A9BBF', decimals:1 },
+  { key:'proteinPct', label:'Protein', unit:'%', color:'#D4A017', decimals:1 },
+  { key:'boneMass', label:'Bone Mass', unit:'kg', color:'#6B6860', decimals:1 },
+  { key:'visceralFat', label:'Visceral Fat', unit:'', color:'#D4A017', decimals:1 },
+  { key:'subcutaneousFatPct', label:'Subcutaneous Fat', unit:'%', color:'#9B59B6', decimals:1 },
+  { key:'bmi', label:'BMI', unit:'', color:'#6B6860', decimals:1 },
+  { key:'bmr', label:'BMR', unit:'kcal', color:'#E05A2B', decimals:0 },
+  { key:'metabolicAge', label:'Metabolic Age', unit:'y', color:'#6B6860', decimals:0 },
+  { key:'waist', label:'Waist', unit:'cm', color:'#9B59B6', decimals:1 },
+];
 const DEFAULT_LIB = [
   { name:'Chicken Breast (100g)', cal:165, pro:31, carb:0, fat:3.6, fib:0, serving:'100g' },
   { name:'White Rice (100g cooked)', cal:130, pro:2.7, carb:28, fat:0.3, fib:0.4, serving:'100g' },
@@ -1284,6 +1413,15 @@ function sum(arr, key) {
 }
 function fmt(n, dec=0) {
   return (Math.round(n * Math.pow(10,dec)) / Math.pow(10,dec)).toLocaleString();
+}
+function numOrNull(v) {
+  if (v === '' || v === null || v === undefined) return null;
+  const n = parseFloat(v);
+  return Number.isFinite(n) ? n : null;
+}
+function metricDisplay(entry, key, decimals=1) {
+  const value = entry && entry[key];
+  return value === null || value === undefined || value === '' ? '—' : fmt(value, decimals);
 }
 function pct(val, total) {
   if (!total) return 0;
@@ -1859,6 +1997,7 @@ function goToDate(date) {
   switchTab('dashboard');
   syncDateInputs();
   renderDashboard();
+  renderBodySummary();
 }
 
 /* ════════════════════════════════════════
@@ -1958,44 +2097,191 @@ function renderWeekly() {
    15. BODY TRACKING
 ════════════════════════════════════════ */
 let bodyChartObj = null;
+let bodyFatChartObj = null;
+
+function getBodyEntriesSorted() {
+  return [...state.bodyLog].sort((a,b) => b.date.localeCompare(a.date) || (Date.parse(b.updatedAt||0) - Date.parse(a.updatedAt||0)));
+}
+function getBodyEntryByDate(date) {
+  const entries = getBodyEntriesSorted();
+  return entries.find(e => e.date === date) || null;
+}
+function getBodyEntryAtOrBefore(date) {
+  const entries = getBodyEntriesSorted();
+  return entries.find(e => e.date <= date) || null;
+}
+function getPreviousBodyEntry(entry) {
+  if (!entry) return null;
+  const entries = getBodyEntriesSorted();
+  const idx = entries.findIndex(e => e.id === entry.id);
+  return idx >= 0 && idx < entries.length - 1 ? entries[idx + 1] : null;
+}
+function jumpToBodySummaryDate(date) {
+  state.ui.activeDate = date;
+  syncDateInputs();
+  switchTab('body-summary');
+}
+
+function renderBodySummary() {
+  const date = state.ui.activeDate || todayStr();
+  const selected = getBodyEntryByDate(date) || getBodyEntryAtOrBefore(date);
+  const exactMatch = !!getBodyEntryByDate(date);
+  if (!selected) {
+    el('bodysum-overview').innerHTML = `<div class="empty-state"><div class="empty-state-icon">🧍</div><p>No body composition entries yet.<br>Go to Body and save your first BIA reading.</p></div>`;
+    el('bodysum-comparison').innerHTML = '';
+    el('bodysum-composition').innerHTML = '';
+    el('bodysum-trends').innerHTML = '';
+    el('bodysum-recent').innerHTML = '';
+    return;
+  }
+
+  const previous = getPreviousBodyEntry(selected);
+  const compareCard = (label, value, suffix='') => {
+    const color = value == null ? 'var(--text)' : (value > 0 ? 'var(--cal)' : value < 0 ? 'var(--fib)' : 'var(--text)');
+    const shown = value == null ? '—' : `${value > 0 ? '+' : ''}${fmt(value, 1)}${suffix}`;
+    return `<div class="week-stat"><div class="week-stat-val" style="color:${color}">${shown}</div><div class="week-stat-lbl">${label}</div></div>`;
+  };
+
+  const entries = getBodyEntriesSorted();
+  const entriesUpToDate = entries.filter(e => e.date <= selected.date);
+  const last7 = entriesUpToDate.slice(0,7);
+  const avgOf = (arr, key) => {
+    const vals = arr.map(e => e[key]).filter(v => v !== null && v !== undefined);
+    return vals.length ? vals.reduce((a,b)=>a+b,0) / vals.length : null;
+  };
+  const last30 = entriesUpToDate.slice(0,30);
+  const lowestBodyFat = (() => {
+    const vals = last30.map(e => e.bodyFatPct).filter(v => v !== null && v !== undefined);
+    return vals.length ? Math.min(...vals) : null;
+  })();
+  const highestMuscleMass = (() => {
+    const vals = last30.map(e => e.muscleMass).filter(v => v !== null && v !== undefined);
+    return vals.length ? Math.max(...vals) : null;
+  })();
+
+  el('bodysum-overview').innerHTML = `
+    <div class="card-header">
+      <div class="card-title" style="margin-bottom:0">Body Summary — ${formatDateDisplay(selected.date)}</div>
+      <button class="btn btn-sm btn-secondary" onclick="switchTab('body')">✏️ Log / Edit</button>
+    </div>
+    <div class="macro-summary">
+      <div class="cal-ring-wrap">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="42" fill="none" stroke="var(--surface2)" stroke-width="10"/>
+          <circle cx="50" cy="50" r="42" fill="none" stroke="var(--pro)" stroke-width="10" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="0"/>
+        </svg>
+        <div class="cal-ring-center">
+          <span class="cal-ring-num">${metricDisplay(selected,'weight',1)}</span>
+          <span class="cal-ring-lbl">kg</span>
+        </div>
+      </div>
+      <div class="macro-grid">
+        <div class="macro-chip"><div class="macro-chip-top"><div class="macro-chip-dot" style="background:var(--cal)"></div><div class="macro-chip-name">Body Fat</div></div><div class="macro-chip-val">${metricDisplay(selected,'bodyFatPct',1)}<span style="font-size:12px;font-weight:400;color:var(--text2)">%</span></div><div class="macro-chip-rem">Selected entry</div></div>
+        <div class="macro-chip"><div class="macro-chip-top"><div class="macro-chip-dot" style="background:var(--fib)"></div><div class="macro-chip-name">Muscle Mass</div></div><div class="macro-chip-val">${metricDisplay(selected,'muscleMass',1)}<span style="font-size:12px;font-weight:400;color:var(--text2)">kg</span></div><div class="macro-chip-rem">Selected entry</div></div>
+        <div class="macro-chip"><div class="macro-chip-top"><div class="macro-chip-dot" style="background:var(--wat)"></div><div class="macro-chip-name">Body Water</div></div><div class="macro-chip-val">${metricDisplay(selected,'waterPct',1)}<span style="font-size:12px;font-weight:400;color:var(--text2)">%</span></div><div class="macro-chip-rem">Selected entry</div></div>
+        <div class="macro-chip"><div class="macro-chip-top"><div class="macro-chip-dot" style="background:var(--fat)"></div><div class="macro-chip-name">Visceral Fat</div></div><div class="macro-chip-val">${metricDisplay(selected,'visceralFat',1)}</div><div class="macro-chip-rem">Selected entry</div></div>
+      </div>
+    </div>
+    <div class="text-sm text-muted">${exactMatch ? 'Showing entry logged for this date.' : `No exact entry for ${formatDateDisplay(date)}. Showing latest available entry on ${formatDateDisplay(selected.date)}.`}${selected.note ? ` Note: ${selected.note}` : ''}</div>`;
+
+  el('bodysum-comparison').innerHTML = `
+    <div class="card-header">
+      <div class="card-title" style="margin-bottom:0">Change vs Previous Entry</div>
+      <div class="text-xs text-muted">${previous ? formatDateDisplay(previous.date) : 'No previous entry'}</div>
+    </div>
+    <div class="week-stat-grid" style="grid-template-columns:repeat(4,1fr)">
+      ${compareCard('Weight', previous && selected.weight != null && previous.weight != null ? selected.weight - previous.weight : null, ' kg')}
+      ${compareCard('Body Fat', previous && selected.bodyFatPct != null && previous.bodyFatPct != null ? selected.bodyFatPct - previous.bodyFatPct : null, '%')}
+      ${compareCard('Muscle Mass', previous && selected.muscleMass != null && previous.muscleMass != null ? selected.muscleMass - previous.muscleMass : null, ' kg')}
+      ${compareCard('Waist', previous && selected.waist != null && previous.waist != null ? selected.waist - previous.waist : null, ' cm')}
+    </div>`;
+
+  el('bodysum-composition').innerHTML = `
+    <div class="card-header">
+      <div class="card-title" style="margin-bottom:0">Body Composition Snapshot</div>
+      <div class="text-xs text-muted">${formatDateDisplay(selected.date)}</div>
+    </div>
+    <div class="comp-grid">${BODY_METRIC_META.map(metric => `
+      <div class="comp-chip">
+        <div class="comp-chip-label">${metric.label}</div>
+        <div class="comp-chip-value" style="color:${metric.color}">${metricDisplay(selected, metric.key, metric.decimals)}${metric.unit ? ` <span style="font-size:12px;font-weight:500;color:var(--text2)">${metric.unit}</span>` : ''}</div>
+      </div>`).join('')}</div>`;
+
+  el('bodysum-trends').innerHTML = `
+    <div class="card-header">
+      <div class="card-title" style="margin-bottom:0">Body Trends</div>
+      <div class="text-xs text-muted">Based on recent entries up to ${formatDateDisplay(selected.date)}</div>
+    </div>
+    <div class="week-stat-grid" style="grid-template-columns:repeat(4,1fr)">
+      <div class="week-stat"><div class="week-stat-val">${avgOf(last7,'weight') != null ? fmt(avgOf(last7,'weight'),1) : '—'}</div><div class="week-stat-lbl">Avg Weight (7)</div></div>
+      <div class="week-stat"><div class="week-stat-val">${avgOf(last7,'bodyFatPct') != null ? fmt(avgOf(last7,'bodyFatPct'),1)+'%' : '—'}</div><div class="week-stat-lbl">Avg Body Fat (7)</div></div>
+      <div class="week-stat"><div class="week-stat-val">${lowestBodyFat != null ? fmt(lowestBodyFat,1)+'%' : '—'}</div><div class="week-stat-lbl">Lowest BF (30)</div></div>
+      <div class="week-stat"><div class="week-stat-val">${highestMuscleMass != null ? fmt(highestMuscleMass,1) : '—'}</div><div class="week-stat-lbl">Peak Muscle (30)</div></div>
+    </div>`;
+
+  el('bodysum-recent').innerHTML = `
+    <div class="card-header">
+      <div class="card-title" style="margin-bottom:0">Recent Body Entries</div>
+      <button class="btn btn-sm btn-secondary" onclick="switchTab('body')">Open Body Log</button>
+    </div>
+    ${entries.slice(0,5).map(e => `
+      <div class="history-day" onclick="jumpToBodySummaryDate('${e.date}')">
+        <div class="history-day-header">
+          <div class="history-day-date">${formatDateDisplay(e.date)}</div>
+          <div class="history-day-cals">${metricDisplay(e,'weight',1)} kg</div>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:13px">
+          <span style="font-family:var(--mono);color:var(--cal)">${e.bodyFatPct != null ? fmt(e.bodyFatPct,1)+'% BF' : '— BF'}</span>
+          <span style="font-family:var(--mono);color:var(--fib)">${e.muscleMass != null ? fmt(e.muscleMass,1)+' kg muscle' : '— muscle'}</span>
+          <span style="font-family:var(--mono);color:var(--wat)">${e.waterPct != null ? fmt(e.waterPct,1)+'% water' : '— water'}</span>
+        </div>
+      </div>`).join('')}
+  `;
+}
 
 function renderBody() {
-  el('body-date').value = todayStr();
-  const entries = [...state.bodyLog].sort((a,b) => b.date.localeCompare(a.date));
-  const recent = entries.slice(0, 30);
+  el('body-date').value = state.ui.activeDate || todayStr();
+  const entries = getBodyEntriesSorted();
+  const recentSorted = [...entries].slice(0, 30).sort((a,b) => a.date.localeCompare(b.date));
+  const latest = entries[0] || null;
   const isDark = state.settings.theme === 'dark';
   const textColor = isDark ? '#9A988F' : '#6B6860';
   const gridColor = isDark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)';
 
-  // Stats
-  if (entries.length >= 2) {
-    const latest = entries[0].weight;
-    const prev = entries[1].weight;
-    const change = latest - prev;
+  if (latest) {
+    const previous = entries[1] || null;
+    const weightChange = previous && latest.weight != null && previous.weight != null ? latest.weight - previous.weight : null;
+    const bodyFatChange = previous && latest.bodyFatPct != null && previous.bodyFatPct != null ? latest.bodyFatPct - previous.bodyFatPct : null;
     const avg7 = (() => {
-      const cut = new Date(); cut.setDate(cut.getDate()-7);
-      const w7 = entries.filter(e => new Date(e.date) >= cut).map(e=>e.weight);
-      return w7.length ? (w7.reduce((a,b)=>a+b,0)/w7.length) : latest;
+      const cut = new Date();
+      cut.setDate(cut.getDate()-7);
+      const weights = entries.filter(e => new Date(e.date + 'T00:00:00') >= cut && e.weight != null).map(e => e.weight);
+      return weights.length ? (weights.reduce((a,b)=>a+b,0) / weights.length) : latest.weight;
     })();
-    el('body-stats').innerHTML = `<div class="week-stat-grid" style="grid-template-columns:repeat(3,1fr)">
-      <div class="week-stat"><div class="week-stat-val">${fmt(latest,1)}</div><div class="week-stat-lbl">Latest (kg)</div></div>
-      <div class="week-stat"><div class="week-stat-val" style="color:${change>0?'var(--cal)':'var(--fib)'}">${change>0?'+':''}${fmt(change,1)}</div><div class="week-stat-lbl">Change</div></div>
-      <div class="week-stat"><div class="week-stat-val">${fmt(avg7,1)}</div><div class="week-stat-lbl">7-day avg</div></div>
+    el('body-stats').innerHTML = `<div class="week-stat-grid" style="grid-template-columns:repeat(4,1fr)">
+      <div class="week-stat"><div class="week-stat-val">${metricDisplay(latest,'weight',1)}</div><div class="week-stat-lbl">Latest kg</div></div>
+      <div class="week-stat"><div class="week-stat-val" style="color:${weightChange === null ? 'var(--text)' : (weightChange > 0 ? 'var(--cal)' : 'var(--fib)')}">${weightChange === null ? '—' : `${weightChange>0?'+':''}${fmt(weightChange,1)}`}</div><div class="week-stat-lbl">Δ Weight</div></div>
+      <div class="week-stat"><div class="week-stat-val" style="color:${bodyFatChange === null ? 'var(--text)' : (bodyFatChange > 0 ? 'var(--cal)' : 'var(--fib)')}">${bodyFatChange === null ? '—' : `${bodyFatChange>0?'+':''}${fmt(bodyFatChange,1)}%`}</div><div class="week-stat-lbl">Δ Body Fat</div></div>
+      <div class="week-stat"><div class="week-stat-val">${avg7 != null ? fmt(avg7,1) : '—'}</div><div class="week-stat-lbl">7-day avg kg</div></div>
     </div>`;
+    el('body-composition-grid').innerHTML = `<div class="comp-grid">${BODY_METRIC_META.map(metric => `
+      <div class="comp-chip">
+        <div class="comp-chip-label">${metric.label}</div>
+        <div class="comp-chip-value" style="color:${metric.color}">${metricDisplay(latest, metric.key, metric.decimals)}${metric.unit ? ` <span style="font-size:12px;font-weight:500;color:var(--text2)">${metric.unit}</span>` : ''}</div>
+      </div>`).join('')}</div>`;
   } else {
     el('body-stats').innerHTML = '';
+    el('body-composition-grid').innerHTML = '<div class="text-sm text-muted">No BIA entries yet. Save your first entry above.</div>';
   }
 
-  // Chart
   if (bodyChartObj) { bodyChartObj.destroy(); bodyChartObj = null; }
-  if (recent.length > 1) {
-    const sorted = [...recent].sort((a,b) => a.date.localeCompare(b.date));
+  if (recentSorted.length > 1) {
     bodyChartObj = new Chart(el('body-chart'), {
       type:'line',
-      data:{ labels: sorted.map(e=>e.date.slice(5)), datasets:[{
-        data: sorted.map(e=>e.weight),
+      data:{ labels: recentSorted.map(e=>e.date.slice(5)), datasets:[{
+        data: recentSorted.map(e=>e.weight ?? null),
         borderColor:'#2B6CE0', backgroundColor:'rgba(43,108,224,.08)',
-        tension:0.4, pointRadius:4, pointBackgroundColor:'#2B6CE0', fill:true,
+        tension:0.35, pointRadius:4, pointBackgroundColor:'#2B6CE0', fill:true, spanGaps:true,
       }]},
       options:{ responsive:true, maintainAspectRatio:false,
         plugins:{legend:{display:false}},
@@ -2007,13 +2293,50 @@ function renderBody() {
     });
   }
 
-  // Log list
+  if (bodyFatChartObj) { bodyFatChartObj.destroy(); bodyFatChartObj = null; }
+  if (recentSorted.length > 1 && recentSorted.some(e => e.bodyFatPct != null)) {
+    bodyFatChartObj = new Chart(el('body-fat-chart'), {
+      type:'line',
+      data:{ labels: recentSorted.map(e=>e.date.slice(5)), datasets:[{
+        data: recentSorted.map(e=>e.bodyFatPct ?? null),
+        borderColor:'#E05A2B', backgroundColor:'rgba(224,90,43,.08)',
+        tension:0.35, pointRadius:4, pointBackgroundColor:'#E05A2B', fill:true, spanGaps:true,
+      }]},
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{legend:{display:false}},
+        scales:{
+          x:{ticks:{color:textColor,font:{size:11},maxRotation:45,autoSkip:true,maxTicksLimit:10},grid:{color:gridColor}},
+          y:{ticks:{color:textColor,font:{size:11}, callback:(value) => value + '%'},grid:{color:gridColor}}
+        }
+      }
+    });
+  }
+
   el('body-log-list').innerHTML = entries.length
     ? entries.slice(0,20).map(e => `
-      <div class="weight-entry">
-        <span class="weight-date">${e.date.slice(5)}</span>
-        <span class="weight-val">${fmt(e.weight,1)} kg</span>
-        ${e.waist ? `<span class="weight-note">↔ ${e.waist}cm</span>` : ''}
+      <div class="weight-entry" style="align-items:flex-start">
+        <div style="min-width:76px">
+          <div class="weight-date">${e.date.slice(5)}</div>
+          <div class="text-xs text-muted">${e.note ? e.note : ''}</div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div class="weight-val">${metricDisplay(e,'weight',1)} kg${e.bodyFatPct != null ? ` · ${fmt(e.bodyFatPct,1)}% BF` : ''}</div>
+          <div class="text-xs text-muted" style="margin-top:4px;display:flex;gap:10px;flex-wrap:wrap">
+            ${e.skeletalMusclePct != null ? `<span>Skel. Muscle ${fmt(e.skeletalMusclePct,1)}%</span>` : ''}
+            ${e.muscleMass != null ? `<span>Muscle ${fmt(e.muscleMass,1)} kg</span>` : ''}
+            ${e.leanMass != null ? `<span>Lean ${fmt(e.leanMass,1)} kg</span>` : ''}
+            ${e.fatMass != null ? `<span>Fat ${fmt(e.fatMass,1)} kg</span>` : ''}
+            ${e.waterPct != null ? `<span>Water ${fmt(e.waterPct,1)}%</span>` : ''}
+            ${e.proteinPct != null ? `<span>Protein ${fmt(e.proteinPct,1)}%</span>` : ''}
+            ${e.boneMass != null ? `<span>Bone ${fmt(e.boneMass,1)} kg</span>` : ''}
+            ${e.visceralFat != null ? `<span>Visceral ${fmt(e.visceralFat,1)}</span>` : ''}
+            ${e.subcutaneousFatPct != null ? `<span>Subq. Fat ${fmt(e.subcutaneousFatPct,1)}%</span>` : ''}
+            ${e.bmi != null ? `<span>BMI ${fmt(e.bmi,1)}</span>` : ''}
+            ${e.waist != null ? `<span>Waist ${fmt(e.waist,1)} cm</span>` : ''}
+            ${e.bmr != null ? `<span>BMR ${fmt(e.bmr,0)} kcal</span>` : ''}
+            ${e.metabolicAge != null ? `<span>MetAge ${fmt(e.metabolicAge,0)}</span>` : ''}
+          </div>
+        </div>
         <button class="sm-btn" onclick="handleDeleteBodyEntry('${e.id}')" title="Delete">🗑</button>
       </div>`).join('')
     : '<div class="text-sm text-muted" style="padding:8px 0">No entries yet.</div>';
@@ -2021,26 +2344,40 @@ function renderBody() {
 
 function saveBodyEntry() {
   const date = el('body-date').value;
-  const weight = parseFloat(el('body-weight').value);
-  if (!date || !weight) { showToast('Please enter a date and weight'); return; }
+  const weight = numOrNull(el('body-weight').value);
+  if (!date || weight === null) { showToast('Please enter a date and weight'); return; }
   state.bodyLog.push({
-    id: genId(), date, weight,
-    waist: parseFloat(el('body-waist').value) || null,
+    id: genId(),
+    date,
+    weight,
+    bodyFatPct: numOrNull(el('body-fat-pct').value),
+    skeletalMusclePct: numOrNull(el('body-skeletal-muscle-pct').value),
+    muscleMass: numOrNull(el('body-muscle-mass').value),
+    leanMass: numOrNull(el('body-lean-mass').value),
+    fatMass: numOrNull(el('body-fat-mass').value),
+    waterPct: numOrNull(el('body-water-pct').value),
+    proteinPct: numOrNull(el('body-protein-pct').value),
+    boneMass: numOrNull(el('body-bone-mass').value),
+    visceralFat: numOrNull(el('body-visceral-fat').value),
+    subcutaneousFatPct: numOrNull(el('body-subcutaneous-fat-pct').value),
+    bmi: numOrNull(el('body-bmi').value),
+    bmr: numOrNull(el('body-bmr').value),
+    metabolicAge: numOrNull(el('body-metabolic-age').value),
+    waist: numOrNull(el('body-waist').value),
     note: el('body-note').value.trim(),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   });
-  el('body-weight').value = '';
-  el('body-waist').value = '';
-  el('body-note').value = '';
+  ['body-weight','body-fat-pct','body-skeletal-muscle-pct','body-muscle-mass','body-lean-mass','body-fat-mass','body-water-pct','body-protein-pct','body-bone-mass','body-visceral-fat','body-subcutaneous-fat-pct','body-bmi','body-bmr','body-metabolic-age','body-waist','body-note'].forEach(id => el(id).value = '');
   saveData();
   renderBody();
-  showToast('Weight logged');
+  renderBodySummary();
+  showToast('Body composition logged');
 }
 
 function handleDeleteBodyEntry(id) {
   showConfirm('Delete entry?','Remove this body measurement?','Delete',true).then(ok => {
-    if (ok) { state.bodyLog = state.bodyLog.filter(e => e.id !== id); saveData(); renderBody(); showToast('Deleted'); }
+    if (ok) { state.bodyLog = state.bodyLog.filter(e => e.id !== id); saveData(); renderBody(); renderBodySummary(); showToast('Deleted'); }
   });
 }
 
@@ -2109,6 +2446,7 @@ function renderAll() {
   renderMeals();
   renderLibrary();
   renderHistory();
+  renderBodySummary();
 }
 
 /* ════════════════════════════════════════
@@ -2119,6 +2457,7 @@ function switchTab(tabName) {
   qsa('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabName));
   qsa('.page').forEach(p => p.classList.toggle('active', p.id === 'page-'+tabName));
   if (tabName === 'weekly') renderWeekly();
+  if (tabName === 'body-summary') renderBodySummary();
   if (tabName === 'body')   renderBody();
   if (tabName === 'settings') renderSettings();
   if (tabName === 'history') renderHistory();
@@ -2155,6 +2494,7 @@ function init() {
   // Build date strips
   makeDateStrip('dash-date-strip', () => { renderDashboard(); });
   makeDateStrip('meals-date-strip', () => { renderMeals(); });
+  makeDateStrip('bodysum-date-strip', () => { renderBodySummary(); });
 
   saveData();
 
